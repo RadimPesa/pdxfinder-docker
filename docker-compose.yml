@@ -3,7 +3,7 @@ version: '3'
 services:
   web:
     container_name: pdxfinder
-#    restart: always
+    restart: always
     env_file:
       - .env
     build: ./pdxfinder/
@@ -13,7 +13,7 @@ services:
     links:
       - neo4j:neo4j
   neo4j:
-    build: ./neo4j/
+    image: neo4j:3.2
     restart: always
     container_name: neo4j
     env_file:

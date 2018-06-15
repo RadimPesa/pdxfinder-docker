@@ -2,7 +2,7 @@
 
 if [ ! -f /data/neo4j-import-done.flag ]; then
     echo "Import database."
-    cp -r /neo4j-data/graph.db /data/databases/
+    tar -zxvf /neo4j-data/graph.tgz /data/databases/graph.db
     touch /data/neo4j-import-done.flag
     chmod 0777 /data/databases/graph.db/*
 else
