@@ -3,23 +3,26 @@ version: '3'
 services:
   web:
     container_name: pdxfinder
-    restart: always
+#    restart: always
     env_file:
       - .env
     build: ./pdxfinder/
     ports:
       - 8080:8080
       - 8081:8081
-#  lasneo4j:
-#     image: neo4j:2.3.11-enterprise
-#     restart: always
-#     container_name: lasneo4j
-#     env_file:
-#       - .env
-#     expose:
-#       - "7474"
-#     ports:
-#       - "7475:7474"
-#     volumes:
-#       - neodata:/data/
-#       - ./neo4j-data:/neo4j-data      
+    links:
+      - neo4j:neo4j
+  neo4j:
+    build: ./neo4j/
+    restart: always
+    container_name: neo4j
+    env_file:
+     - .env
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neodata:/data/
+      - ./neo4j-data:/neo4j-data
+volumes:
+  neodata:
