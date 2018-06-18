@@ -12,6 +12,8 @@ services:
       - 8081:8081
     links:
       - neo4j:neo4j
+    volumes:
+      - ./import-data:/import-data
   neo4j:
     image: neo4j:3.2
     restart: always
