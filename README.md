@@ -8,7 +8,11 @@
 
 ## Deployment 
 
-Just clone the repository and launch
+Just clone the repository, build images with
+
+<code>docker-compose build</code>
+
+and launch
 
 <code>docker-compose up -d</code>
 
