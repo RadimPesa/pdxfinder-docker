@@ -9,6 +9,7 @@ RUN apt-get update \
 RUN git clone --depth 1 -b dev https://github.com/PDXFinder/pdxfinder
 RUN echo "spring.data.neo4j.uri=http://neo4j:7474" >> /pdxfinder/web/src/main/resources/application.properties
 #RUN sed -i "s/spring.data.neo4j.uri=.*/spring.data.neo4j.uri=http:\/\/neo4j:7474/" /pdxfinder/indexer/src/main/resources/application.properties
+RUN sed -i "s/server.context-path=.*/server.context-path=\//" /pdxfinder/web/src/main/resources/application.properties
 WORKDIR /pdxfinder
 RUN mvn clean package
 WORKDIR /pdxfinder/web/target
