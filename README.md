@@ -18,7 +18,7 @@ and launch
 
 PDXFinder should be available at 
 
-<code>http:/localhost:8080/data/search</code>
+<code>http://localhost</code>
 
 Logs can be checked with
 
