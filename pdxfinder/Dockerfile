@@ -1,6 +1,6 @@
 FROM debian:stretch
 
-MAINTAINER Radim Pesa (pesa@ics.muni.cz)
+LABEL maintainer="pesa@ics.muni.cz"
 
 RUN apt-get update \
     && apt-get install -y openjdk-8-jdk \

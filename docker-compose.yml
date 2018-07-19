@@ -8,8 +8,9 @@ services:
       - .env
     build: ./pdxfinder/
     ports:
-      - 80:8080
-      - 8081:8081
+      - 8080:8080
+    expose:
+      - 8080
     links:
       - neo4j:neo4j
     volumes:
@@ -26,5 +27,17 @@ services:
     volumes:
       - neodata:/data/
       - ./neo4j-data:/neo4j-data
+  proxy:
+    container_name: proxy
+    restart: always
+    env_file:
+      - .env
+    build:
+      context: ./proxy
+    links:
+      - web:web
+    ports:
+     - "80:80"
+
 volumes:
   neodata:
