@@ -7,12 +7,12 @@ services:
     env_file:
       - .env
     build: ./pdxfinder/
-    ports:
-      - 8080:8080
+#    ports:
+#      - 8080:8080
     expose:
       - 8080
-    links:
-      - neo4j:neo4j
+#    links:
+#      - neo4j:neo4j
     volumes:
       - ./import-data:/import-data
   neo4j:
@@ -34,10 +34,11 @@ services:
       - .env
     build:
       context: ./proxy
-    links:
-      - web:web
+#    links:
+#      - web:web
     ports:
      - "80:80"
+     - "443:443"
 
 volumes:
   neodata:

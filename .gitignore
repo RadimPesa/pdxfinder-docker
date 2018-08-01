@@ -1,2 +1,5 @@
 *.json
 pdx.tgz
+graph.tgz
+server.key
+server.crt
