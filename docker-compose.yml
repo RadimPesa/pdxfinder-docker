@@ -6,7 +6,9 @@ services:
     restart: always
     env_file:
       - .env
-    build: ./pdxfinder/
+#    build: ./pdxfinder/
+    image: registry.gitlab.ics.muni.cz:443/europdx-public/pdxfinder-sourcecode
+
 #    ports:
 #      - 8080:8080
     expose:
