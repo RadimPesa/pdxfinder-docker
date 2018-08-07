@@ -9,8 +9,8 @@ services:
 #    build: ./pdxfinder/
     image: registry.gitlab.ics.muni.cz:443/europdx-public/pdxfinder-sourcecode
 
-#    ports:
-#      - 8080:8080
+    ports:
+      - 8080:8080
     expose:
       - 8080
 #    links:
