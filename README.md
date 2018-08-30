@@ -24,7 +24,7 @@ and launch
 
 PDXFinder should be available at 
 
-<code>https://pdxfinder.edirex.ics.muni.cz/</code>
+<code>https://dataportal.edirex.ics.muni.cz/</code>
 
 Logs can be checked with
 
