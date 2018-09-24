@@ -1,18 +1,19 @@
 image: docker:latest
 
 services:
-- docker:dind
+  - docker:dind
 
 before_script:
-- apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
-- docker version
-- docker-compose version
+  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
+  - docker version
+  - docker-compose version
 
 test-build-master:
   stage: test
   script:
-  - touch ssl/server.key
-  - touch ssl/server.crt
-  - docker-compose build
-only:
-  - master
+    - mkdir -p proxy/ssl
+    - touch proxy/ssl/server.key
+    - touch proxy/ssl/server.crt
+    - docker-compose build
+  only:
+    - master
