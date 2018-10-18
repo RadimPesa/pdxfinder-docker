@@ -20,7 +20,7 @@ RUN a2enmod proxy && \
     a2ensite proxy.conf && \
     mkdir /etc/apache2/ssl
 
-COPY ./ssl/server.key ./ssl/server.crt /etc/apache2/ssl/
+#COPY ./ssl/server.key ./ssl/server.crt /etc/apache2/ssl/
     
 ENV TZ=Europe/Prague
 

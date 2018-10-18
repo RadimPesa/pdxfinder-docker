@@ -8,12 +8,24 @@ before_script:
   - docker version
   - docker-compose version
 
+build-proxy:
+  stage: build
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - cd proxy
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy"
+  only:
+    - master
+
+
+
 test-build-master:
   stage: test
   script:
-    - mkdir -p proxy/ssl
-    - touch proxy/ssl/server.key
-    - touch proxy/ssl/server.crt
+#    - mkdir -p proxy/ssl
+#    - touch proxy/ssl/server.key
+#    - touch proxy/ssl/server.crt
     - docker-compose build
   only:
     - master

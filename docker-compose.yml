@@ -36,8 +36,8 @@ services:
       - .env
     build:
       context: ./proxy
-#    links:
-#      - web:web
+    volumes:
+      - ./proxy/ssl:/etc/apache2/ssl
     ports:
      - "80:80"
      - "443:443"
