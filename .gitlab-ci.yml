@@ -1,10 +1,11 @@
 image: docker:latest
+image: registry.gitlab.ics.muni.cz:443/oss/ci-images/datahub-docker-ci:latest
 
 services:
   - docker:dind
 
 before_script:
-  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
+#  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
   - docker version
   - docker-compose version
 
