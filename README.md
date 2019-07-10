@@ -1,4 +1,4 @@
-# PDXFinder-Docker
+# Data Portal Application Stack
 
 ## Requirements
  * docker
@@ -6,13 +6,12 @@
 
 
 
-## Deployment 
+## Usage 
 
-Just clone the repository, copy ssl key and certificate to 
-
-<code>proxy/ssl/server.key</code>
-<code>proxy/ssl/server.crt</code>
+Clone the repository. copy ssl key and certificate to <code>proxy/ssl/server.key</code> and <code>proxy/ssl/server.crt</code>
 .
+
+For deployment on different hostname than dataportal.europdx.eu, edit HOST variable in .env. 
 
 Build images with
 
