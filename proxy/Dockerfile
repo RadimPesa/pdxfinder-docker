@@ -4,6 +4,9 @@ LABEL maintainer="pesa@ics.muni.cz"
 
 RUN apt-get update &&\
     apt-get install -y apache2  &&\
+#    apt-get install -y iputils-ping &&\
+#    apt-get install -y curl &&\
+#    apt-get install -y iproute2 &&\
     apt-get clean
     
 RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \
@@ -20,8 +23,6 @@ RUN a2enmod proxy && \
     a2ensite proxy.conf && \
     mkdir /etc/apache2/ssl
 
-#COPY ./ssl/server.key ./ssl/server.crt /etc/apache2/ssl/
-    
 ENV TZ=Europe/Prague
 
 COPY start.sh start.sh
