@@ -4,6 +4,7 @@ LABEL maintainer="pesa@ics.muni.cz"
 
 RUN apt-get update &&\
     apt-get install -y apache2  &&\
+    apt-get install -y libapache2-mod-auth-mellon &&\
 #    apt-get install -y iputils-ping &&\
 #    apt-get install -y curl &&\
 #    apt-get install -y iproute2 &&\
@@ -20,6 +21,7 @@ RUN a2enmod proxy && \
     a2enmod proxy_http && \
     a2enmod rewrite && \
     a2enmod ssl && \
+    a2enmod auth_mellon &&\
     a2ensite proxy.conf && \
     mkdir /etc/apache2/ssl
 
