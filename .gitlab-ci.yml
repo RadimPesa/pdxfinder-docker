@@ -1,4 +1,3 @@
-image: docker:latest
 image: registry.gitlab.ics.muni.cz:443/oss/ci-images/datahub-docker-ci:latest
 
 services:
