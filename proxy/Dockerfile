@@ -22,6 +22,7 @@ RUN a2enmod proxy && \
     a2enmod rewrite && \
     a2enmod ssl && \
     a2enmod auth_mellon &&\
+    a2enmod mod_headers &&\
     a2ensite proxy.conf && \
     mkdir /etc/apache2/ssl
 
