@@ -2,19 +2,16 @@ version: '3'
 
 services:
   web:
-    container_name: pdxfinder
+    container_name: dataportal
     restart: always
     env_file:
       - .env
-#    build: ./pdxfinder/
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:$CI_COMMIT_REF_NAME
 
     ports:
       - 8080:8080
     expose:
       - 8080
-#    links:
-#      - neo4j:neo4j
     volumes:
       - ./import-data:/import-data
   neo4j:
@@ -34,10 +31,11 @@ services:
     restart: always
     env_file:
       - .env
-    build:
-      context: ./proxy
-#    links:
-#      - web:web
+#    build:
+#      context: ./proxy
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:$CI_COMMIT_REF_NAME
+    volumes:
+      - ./proxy/ssl:/etc/apache2/ssl
     ports:
      - "80:80"
      - "443:443"

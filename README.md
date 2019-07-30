@@ -1,4 +1,4 @@
-# PDXFinder-Docker
+# Data Portal Application Stack
 
 ## Requirements
  * docker
@@ -6,13 +6,12 @@
 
 
 
-## Deployment 
+## Usage 
 
-Just clone the repository, copy ssl key and certificate to 
-
-<code>proxy/ssl/server.key</code>
-<code>proxy/ssl/server.crt</code>
+Clone the repository. copy ssl key and certificate to <code>proxy/ssl/server.key</code> and <code>proxy/ssl/server.crt</code>
 .
+
+For deployment on different hostname than dataportal.europdx.eu, edit HOST variable in .env. 
 
 Build images with
 
@@ -22,15 +21,15 @@ and launch
 
 <code>docker-compose up -d</code>
 
-PDXFinder should be available at 
+Dataportal should be available at 
 
-<code>https://dataportal.edirex.ics.muni.cz/</code>
+<code>https://dataportal.europdx.eu</code>
 
 Logs can be checked with
 
 <code>docker-compose logs</code>
 
-When starting on other machine than pdxfinder.edirex.ics.muni.cz, set variable HOST in .env and copy proper ssl files as mentioned above.
+When starting on other machine than dataportal.europdx.eu, set variable HOST in .env and copy proper ssl files as mentioned above.
 
 ## Importing data
 This repository includes initial dummy data to start with. To start with your own data exchange file /neo4j-data/graph.tgz with preferred dataset before starting deployment. 
