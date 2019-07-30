@@ -19,7 +19,7 @@ services:
     restart: always
     container_name: neo4j
     env_file:
-     - .env
+      - .env
     ports:
       - "7474:7474"
       - "7687:7687"
@@ -31,14 +31,21 @@ services:
     restart: always
     env_file:
       - .env
-#    build:
-#      context: ./proxy
+    #   build:
+    #      context: ./proxy
     image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:latest
     volumes:
       - ./proxy/ssl:/etc/apache2/ssl
+      - ./proxy/mellon:/etc/apache2/mellon
     ports:
-     - "80:80"
-     - "443:443"
+      - "80:80"
+      - "443:443"
 
 volumes:
   neodata:
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1442
