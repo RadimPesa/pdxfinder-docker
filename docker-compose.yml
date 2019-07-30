@@ -6,7 +6,7 @@ services:
     restart: always
     env_file:
       - .env
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:$CI_COMMIT_REF_NAME
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:dev
 
     ports:
       - 8080:8080
@@ -33,7 +33,7 @@ services:
       - .env
 #    build:
 #      context: ./proxy
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:$CI_COMMIT_REF_NAME
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:dev
     volumes:
       - ./proxy/ssl:/etc/apache2/ssl
     ports:
