@@ -8,7 +8,7 @@ before_script:
   - docker version
   - docker-compose version
 
-build-proxy:
+build-proxy-master:
   stage: build
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -18,6 +18,16 @@ build-proxy:
   only:
     - master
 
+build-proxy-other:
+  stage: build
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - cd proxy
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+  only:
+    - beta
+    - dev
 
 
 test-build-master:
