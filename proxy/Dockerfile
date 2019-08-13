@@ -26,7 +26,7 @@ RUN a2enmod proxy && \
     a2ensite proxy.conf && \
     mkdir /etc/apache2/ssl
 
-COPY cp mpm_event.conf /etc/apache2/mods-enabled/mpm_event.conf
+COPY mpm_event.conf /etc/apache2/mods-enabled/mpm_event.conf
 
 ENV TZ=Europe/Prague
 
