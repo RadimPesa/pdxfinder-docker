@@ -6,8 +6,7 @@ services:
     restart: always
     env_file:
       - .env
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:beta
-
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:${PORTAL_BRANCH}
     ports:
       - 8080:8080
     expose:
@@ -31,9 +30,7 @@ services:
     restart: always
     env_file:
       - .env
-    #   build:
-    #      context: ./proxy
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:beta
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-docker/proxy:${PORTAL_BRANCH}
     volumes:
       - ./proxy/ssl:/etc/apache2/ssl
       - ./proxy/mellon:/etc/apache2/mellon
