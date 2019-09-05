@@ -1,4 +1,4 @@
-image: registry.gitlab.ics.muni.cz:443/oss/ci-images/datahub-docker-ci:latest
+image: registry.gitlab.ics.muni.cz:443/europdx/ci-images/docker-extended:latest
 
 services:
   - docker:dind
@@ -13,8 +13,8 @@ build-proxy-master:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - cd proxy
-    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
   only:
     - master
 
@@ -23,8 +23,8 @@ build-proxy-other:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - cd proxy
-    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
   only:
     - beta
     - dev
