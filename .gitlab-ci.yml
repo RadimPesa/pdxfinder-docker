@@ -8,17 +8,40 @@ before_script:
   - docker version
   - docker-compose version
 
-build-proxy:
+build-proxy-master:
   stage: build
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET|" .env
     - cd proxy
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
   only:
     - master
+
+build-proxy-beta:
+  stage: build
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_BETA|" .env
+    - cd proxy
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+  only:
     - beta
+
+build-proxy-dev:
+  stage: build
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_DEV|" .env
+    - cd proxy
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+  only:
     - dev
 
 restart-master:
