@@ -13,7 +13,7 @@ build-proxy-master:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - cd proxy
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET|" .env
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET|" dataportal-docker/.env
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
@@ -25,7 +25,7 @@ build-proxy-beta:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - cd proxy
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_BETA|" .env
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_BETA|" dataportal-docker/.env
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
@@ -37,7 +37,7 @@ build-proxy-dev:
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
     - cd proxy
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_DEV|" .env
+    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_DEV|" dataportal-docker/.env
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
