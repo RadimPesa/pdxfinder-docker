@@ -21,47 +21,35 @@ build-proxy:
     - beta
     - dev
 
-deploy-init-master:
+restart-master:
   stage: deploy
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "git clone https://gitlab.ics.muni.cz/europdx/dataportal/dataportal-docker.git; mkdir credentials && cd credentials && git clone https://$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD@gitlab.ics.muni.cz/europdx/credentials/dataportal.git; cd ~; ./init_script.sh $CI_COMMIT_REF_SLUG;"
-  environment:
-    name: master
-    url: $DEPLOY_TARGET
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd dataportal-docker && docker-compose down && docker-compose up -d"
   only:
     - master
   when: manual
-  allow_failure: false
 
-deploy-init-beta:
+restart-beta:
   stage: deploy
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_BETA "git clone https://gitlab.ics.muni.cz/europdx/dataportal/dataportal-docker.git; mkdir credentials && cd credentials && git clone https://$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD@gitlab.ics.muni.cz/europdx/credentials/dataportal.git; cd ~; ./init_script.sh $CI_COMMIT_REF_SLUG;"
-  environment:
-    name: master
-    url: $DEPLOY_TARGET_BETA
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_BETA "cd dataportal-docker && docker-compose down && docker-compose up -d"
   only:
-    - master
+    - beta
   when: manual
-  allow_failure: false
 
-deploy-init-dev:
+restart-dev:
   stage: deploy
   script:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_DEV "git clone https://gitlab.ics.muni.cz/europdx/dataportal/dataportal-docker.git; mkdir credentials && cd credentials && git clone https://$DEPLOY_TOKEN:$DEPLOY_TOKEN_PASSWORD@gitlab.ics.muni.cz/europdx/credentials/dataportal.git; cd ~; ./init_script.sh $CI_COMMIT_REF_SLUG;"
-  environment:
-    name: master
-    url: $DEPLOY_TARGET_DEV
+    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_DEV "cd dataportal-docker && docker-compose down && docker-compose up -d"
   only:
-    - master
+    - dev
   when: manual
-  allow_failure: false
 
 deploy-master:
   stage: deploy
