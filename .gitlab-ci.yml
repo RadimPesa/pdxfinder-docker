@@ -1,8 +1,5 @@
 image: registry.gitlab.ics.muni.cz:443/europdx/ci-images/docker-extended:latest
 
-services:
-  - docker:dind
-
 before_script:
 #  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
   - docker version
