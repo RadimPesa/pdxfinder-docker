@@ -5,6 +5,13 @@ before_script:
   - docker version
   - docker-compose version
 
+
+.restart_script:
+  script: &restart_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker && docker-compose down && docker-compose up -d"
+
 build-proxy-master:
   stage: build
   script:
@@ -40,30 +47,30 @@ build-proxy-dev:
 
 restart-master:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - master
   when: manual
 
 restart-beta:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_BETA "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - beta
   when: manual
 
 restart-dev:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_DEV "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - dev
   when: manual
