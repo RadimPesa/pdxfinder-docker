@@ -1,85 +1,105 @@
 image: registry.gitlab.ics.muni.cz:443/europdx/ci-images/docker-extended:latest
 
-services:
-  - docker:dind
-
 before_script:
 #  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
   - docker version
   - docker-compose version
 
-build-proxy-master:
-  stage: build
-  script:
+
+.restart_script:
+  script: &restart_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker && docker-compose down && docker-compose up -d"
+
+.build_proxy_script:
+  script: &build_proxy_script
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET|" .env
+    - sed -ie "s|\(HOST=\).*|\1${TARGET}|" .env
     - cd proxy
-    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+
+.deploy_script:
+  script: &deploy_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+
+
+#---- BUILD
+#-------------------
+build_proxy_master:
+  stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET
+  script:
+    *build_proxy_script
   only:
     - master
 
-build-proxy-beta:
+build_proxy_beta:
   stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_BETA|" .env
-    - cd proxy
-    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+    *build_proxy_script
   only:
     - beta
 
-build-proxy-dev:
+build_proxy_dev:
   stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - sed -ie "s|\(HOST=\).*|\1$DEPLOY_TARGET_DEV|" .env
-    - cd proxy
-    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA" -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHA"
-    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+    *build_proxy_script
   only:
     - dev
 
-restart-master:
+
+#---- RESTART
+#-------------------
+
+restart_master:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - master
   when: manual
 
-restart-beta:
+restart_beta:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_BETA "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - beta
   when: manual
 
-restart-dev:
+restart_dev:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_DEV "cd dataportal-docker && docker-compose down && docker-compose up -d"
+    *restart_script
   only:
     - dev
   when: manual
+
+
+#---- DEPLOY
+#-------------------
 
 deploy-master:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+    *deploy_script
   environment:
     name: master
     url: $DEPLOY_TARGET
@@ -88,10 +108,10 @@ deploy-master:
 
 deploy-beta:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_BETA "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+    *deploy_script
   environment:
     name: beta
     url: $DEPLOY_TARGET_BETA
@@ -100,10 +120,10 @@ deploy-beta:
 
 deploy-dev:
   stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
   script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no $DEPLOY_TARGET_DEV "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+    *deploy_script
   environment:
     name: dev
     url: $DEPLOY_TARGET_DEV
