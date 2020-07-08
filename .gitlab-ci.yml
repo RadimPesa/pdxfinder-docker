@@ -129,7 +129,7 @@ deploy-release-20:
   variables:
     TARGET: $DEPLOY_TARGET_BETA
   script:
-    *deploy_script_r20
+    *deploy_script
   environment:
     name: beta
     url: $DEPLOY_TARGET_BETA
