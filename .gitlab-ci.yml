@@ -26,6 +26,12 @@ before_script:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git status; git pull; docker-compose pull; docker-compose up -d"
 
+.deploy_script_beta:
+  script: &deploy_script_beta
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git checkout beta; git status; git pull; docker-compose pull; docker-compose up -d"    
+
 
 #---- BUILD
 #-------------------
@@ -112,7 +118,7 @@ deploy-beta:
   variables:
     TARGET: $DEPLOY_TARGET_BETA
   script:
-    *deploy_script
+    *deploy_script_beta
   environment:
     name: beta
     url: $DEPLOY_TARGET_BETA
