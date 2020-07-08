@@ -130,6 +130,7 @@ deploy-beta:
   only:
     - beta
     - release-2.0    
+  when: manual
 
 deploy-release-20:
   stage: deploy
@@ -142,6 +143,7 @@ deploy-release-20:
     url: $DEPLOY_TARGET_BETA
   only:
     - release-2.0
+  when: manual
 
 deploy-dev:
   stage: deploy
