@@ -46,8 +46,7 @@ build_proxy_beta:
     *build_proxy_script
   only:
     - beta
-  when:
-    - manual
+  when: manual
 
 build_proxy_dev:
   stage: build
@@ -119,8 +118,7 @@ deploy-beta:
     url: $DEPLOY_TARGET_BETA
   only:
     - beta
-  when:
-    - manual    
+  when: manual
 
 deploy-dev:
   stage: deploy
