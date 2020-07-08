@@ -117,6 +117,7 @@ deploy-beta:
     url: $DEPLOY_TARGET_BETA
   only:
     - beta
+    - release-2.0
 
 deploy-dev:
   stage: deploy
