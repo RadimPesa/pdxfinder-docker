@@ -125,7 +125,7 @@ deploy-beta:
   only:
     - beta
 
-deploy-release-2.0:
+deploy-release-2-0:
   stage: deploy
   variables:
     TARGET: $DEPLOY_TARGET_BETA
