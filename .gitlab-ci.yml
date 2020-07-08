@@ -24,7 +24,14 @@ before_script:
   script: &deploy_script
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git status; git checkout release-2.0; git status; git pull; docker-compose pull; docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git status; git pull; docker-compose pull; docker-compose up -d"
+
+
+.deploy_script_r20:
+  script: &deploy_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git checkout release-2.0; git status; git pull; docker-compose pull; docker-compose up -d"
 
 
 #---- BUILD
@@ -117,6 +124,17 @@ deploy-beta:
     url: $DEPLOY_TARGET_BETA
   only:
     - beta
+
+deploy-release-2.0:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
+  script:
+    *deploy_script
+  environment:
+    name: beta
+    url: $DEPLOY_TARGET_BETA
+  only:
     - release-2.0
 
 deploy-dev:
@@ -124,7 +142,7 @@ deploy-dev:
   variables:
     TARGET: $DEPLOY_TARGET_DEV
   script:
-    *deploy_script
+    *deploy_script_r20
   environment:
     name: dev
     url: $DEPLOY_TARGET_DEV
