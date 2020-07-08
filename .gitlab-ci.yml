@@ -24,7 +24,7 @@ before_script:
   script: &deploy_script
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git status; git pull; docker-compose pull; docker-compose up -d"
 
 
 #---- BUILD
@@ -46,6 +46,8 @@ build_proxy_beta:
     *build_proxy_script
   only:
     - beta
+  when:
+    - manual
 
 build_proxy_dev:
   stage: build
@@ -117,6 +119,8 @@ deploy-beta:
     url: $DEPLOY_TARGET_BETA
   only:
     - beta
+  when:
+    - manual    
 
 deploy-dev:
   stage: deploy
