@@ -27,7 +27,7 @@ before_script:
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git status; git pull; docker-compose pull; docker-compose up -d"
 
 .deploy_script_r20:
-  script: &deploy_script
+  script: &deploy_script_r20
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git checkout release-2.0; git status; git pull; docker-compose pull; docker-compose up -d"
