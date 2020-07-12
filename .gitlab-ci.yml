@@ -36,7 +36,7 @@ before_script:
   script: &deploy_script_pdxf6_m_d
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git checkout pdxfinder6-merge-dalibor; git status; git pull; docker-compose pull; docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder6-merge-dalibor; git status; git pull; docker-compose pull; docker-compose up -d"
 
 
 #---- BUILD
