@@ -32,11 +32,11 @@ before_script:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git checkout beta; git status; git pull; docker-compose pull; docker-compose up -d"
 
-.deploy_script_pdxf6_m_d:
-  script: &deploy_script_pdxf6_m_d
+.deploy_script_pdxf6_m_d_fordev:
+  script: &deploy_script_pdxf6_m_d_fordev
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder6-merge-dalibor; git status; git pull; docker-compose pull; docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder6-merge-dalibor-fordev; git status; git pull; docker-compose pull; docker-compose up -d"
 
 
 #---- BUILD
@@ -132,17 +132,17 @@ deploy-beta:
     - release-2.0    
   when: manual
 
-deploy-pdxf6-m-d:
+deploy-pdxf6-m-d-fordev:
   stage: deploy
   variables:
-    TARGET: $DEPLOY_TARGET_BETA
+    TARGET: $DEPLOY_TARGET_DEV
   script:
-    *deploy_script_pdxf6_m_d
+    *deploy_script_pdxf6_m_d_fordev
   environment:
     name: beta
-    url: $DEPLOY_TARGET_BETA
+    url: $DEPLOY_TARGET_DEV
   only:
-    - pdxfinder6-merge-dalibor
+    - pdxfinder6-merge-dalibor-fordev
   when: manual
 
 deploy-dev:
