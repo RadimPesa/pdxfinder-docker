@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     # PORTAL_BRANCH is environment variable stored in .env file while initial deploy using ansible
-    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:pdxfinder6-merge-dalibor
+    image: registry.gitlab.ics.muni.cz:443/europdx/dataportal/dataportal-sourcecode:pdxfinder6-merge-dalibor-fordev
     ports:
       - 8080:8080
     expose:
