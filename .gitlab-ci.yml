@@ -112,7 +112,7 @@ deploy-beta:
   variables:
     TARGET: $DEPLOY_TARGET_BETA
   script:
-    *deploy_script_beta
+    *deploy_script
   environment:
     name: beta
     url: $DEPLOY_TARGET_BETA
