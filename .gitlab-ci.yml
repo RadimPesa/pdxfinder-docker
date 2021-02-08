@@ -39,7 +39,7 @@ before_script:
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder6-merge-dalibor; git status; git pull; docker-compose pull; docker-compose up -d"
 
 .deploy_script_pdxf_m_jan2021:
-  script: &deploy_script_pdxf_m_jan2021:
+  script: &deploy_script_pdxf_m_jan2021
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder-merge-jan2021; git status; git pull; docker-compose pull; docker-compose up -d"
