@@ -38,6 +38,14 @@ before_script:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder6-merge-dalibor; git status; git pull; docker-compose pull; docker-compose up -d"
 
+.deploy_script_pdxf_m_jan2021:
+  script: &deploy_script_pdxf_m_jan2021:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git fetch; git checkout pdxfinder-merge-jan2021; git status; git pull; docker-compose pull; docker-compose up -d"
+
+
+
 
 #---- BUILD
 #-------------------
@@ -144,6 +152,19 @@ deploy-pdxf6-m-d:
   only:
     - pdxfinder6-merge-dalibor
   when: manual
+
+deploy-pdxf-m-jan2021:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
+  script:
+    *deploy_script_pdxf_m_jan2021
+  environment:
+    name: beta
+    url: $DEPLOY_TARGET_DEV
+  only:
+    - pdxfinder-merge-jan2021
+  when: manual  
 
 deploy-dev:
   stage: deploy
