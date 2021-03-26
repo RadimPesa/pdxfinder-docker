@@ -36,6 +36,13 @@ before_script:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
 
+.reload_neo4j_script:
+  script: &reload_neo4j_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; docker-compose down; docker volume rm dataportal-docker_neodata; docker-compose up -d"
+
+
 
 #---- BUILD
 #-------------------
@@ -144,6 +151,19 @@ deploy-dev:
   only:
     - dev
   when: manual    
+
+reload-neo4j-dev:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
+  script:
+    *reload_neo4j_script
+  environment:
+    name: dev
+    url: $DEPLOY_TARGET_DEV
+  only:
+    - dev
+  when: manual  
 
 
 test-build-master:
