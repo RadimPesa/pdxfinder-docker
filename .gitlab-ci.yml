@@ -152,6 +152,38 @@ deploy-dev:
     - dev
   when: manual    
 
+
+#---- RESTART & RELOAD NEO4J
+#-------------------
+
+reload-neo4j-master:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
+  script:
+    *reload_neo4j_script
+  environment:
+    name: master
+    url: $DEPLOY_TARGET
+  only:
+    - master
+  when: manual 
+
+
+reload-neo4j-beta:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
+  script:
+    *reload_neo4j_script
+  environment:
+    name: beta
+    url: $DEPLOY_TARGET_BETA
+  only:
+    - beta
+  when: manual 
+
+
 reload-neo4j-dev:
   stage: deploy
   variables:
@@ -164,5 +196,4 @@ reload-neo4j-dev:
   only:
     - dev
   when: manual  
-
 
