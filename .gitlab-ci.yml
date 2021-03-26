@@ -12,6 +12,14 @@ before_script:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker && docker-compose down && docker-compose up -d"
 
+.build_proxy_master_script:
+  script: &build_proxy_script
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1${TARGET}|" .env
+    - cd proxy
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy"    
+
 .build_proxy_script:
   script: &build_proxy_script
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
@@ -34,7 +42,7 @@ build_proxy_master:
   variables:
     TARGET: $DEPLOY_TARGET
   script:
-    *build_proxy_script
+    *build_proxy_master_script
   only:
     - master
 
