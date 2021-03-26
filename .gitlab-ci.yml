@@ -1,33 +1,147 @@
 image: registry.gitlab.ics.muni.cz:443/europdx/ci-images/docker-extended:latest
 
-services:
-  - docker:dind
-
 before_script:
 #  - apk add --update python py-pip python-dev && pip install docker-compose # install docker-compose
   - docker version
   - docker-compose version
 
-build-proxy-master:
-  stage: build
-  script:
+
+.restart_script:
+  script: &restart_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker && docker-compose down && docker-compose up -d"
+
+.build_proxy_master_script:
+  script: &build_proxy_script
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1${TARGET}|" .env
     - cd proxy
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy"
-  only:
-    - master
+    - docker push "$CI_REGISTRY_IMAGE/proxy"    
 
-build-proxy-other:
-  stage: build
-  script:
+.build_proxy_script:
+  script: &build_proxy_script
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - sed -ie "s|\(HOST=\).*|\1${TARGET}|" .env
     - cd proxy
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"
+
+.deploy_script:
+  script: &deploy_script
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
+
+
+#---- BUILD
+#-------------------
+build_proxy_master:
+  stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET
+  script:
+    *build_proxy_master_script
+  only:
+    - master
+
+build_proxy_beta:
+  stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
+  script:
+    *build_proxy_script
   only:
     - beta
+
+build_proxy_dev:
+  stage: build
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
+  script:
+    *build_proxy_script
+  only:
     - dev
+
+
+#---- RESTART
+#-------------------
+
+restart_master:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
+  script:
+    *restart_script
+  only:
+    - master
+  when: manual
+
+restart_beta:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
+  script:
+    *restart_script
+  only:
+    - beta
+  when: manual
+
+restart_dev:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
+  script:
+    *restart_script
+  only:
+    - dev
+  when: manual
+
+
+#---- DEPLOY
+#-------------------
+
+deploy-master:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET
+  script:
+    *deploy_script
+  environment:
+    name: master
+    url: $DEPLOY_TARGET
+  only:
+    - master
+  when: manual    
+
+
+deploy-beta:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_BETA
+  script:
+    *deploy_script
+  environment:
+    name: beta
+    url: $DEPLOY_TARGET_BETA
+  only:
+    - beta
+  when: manual    
+
+
+deploy-dev:
+  stage: deploy
+  variables:
+    TARGET: $DEPLOY_TARGET_DEV
+  script:
+    *deploy_script
+  environment:
+    name: dev
+    url: $DEPLOY_TARGET_DEV
+  only:
+    - dev
+  when: manual    
 
 
 test-build-master:
