@@ -18,7 +18,9 @@ before_script:
     - sed -ie "s|\(HOST=\).*|\1${TARGET}|" .env
     - cd proxy
     - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy" .
-    - docker push "$CI_REGISTRY_IMAGE/proxy"    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE/proxy"
+    - docker push "$CI_REGISTRY_IMAGE/proxy:$CI_COMMIT_REF_SLUG"    
 
 .build_proxy_script:
   script: &build_proxy_script
