@@ -166,12 +166,3 @@ reload-neo4j-dev:
   when: manual  
 
 
-test-build-master:
-  stage: test
-  script:
-    #    - mkdir -p proxy/ssl
-    #    - touch proxy/ssl/server.key
-    #    - touch proxy/ssl/server.crt
-    - docker-compose build
-  only:
-    - master
