@@ -105,6 +105,8 @@ deploy-master:
     url: $DEPLOY_TARGET
   only:
     - master
+  when: manual    
+
 
 deploy-beta:
   stage: deploy
@@ -117,6 +119,8 @@ deploy-beta:
     url: $DEPLOY_TARGET_BETA
   only:
     - beta
+  when: manual    
+
 
 deploy-dev:
   stage: deploy
@@ -129,6 +133,7 @@ deploy-dev:
     url: $DEPLOY_TARGET_DEV
   only:
     - dev
+  when: manual    
 
 
 test-build-master:
