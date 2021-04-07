@@ -34,7 +34,7 @@ before_script:
   script: &deploy_script
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git stash; git pull; docker-compose pull; docker-compose up -d"
+    - ssh -o StrictHostKeyChecking=no ${TARGET} "cd dataportal-docker; git pull; docker-compose pull; docker-compose up -d"
 
 .reload_neo4j_script:
   script: &reload_neo4j_script
